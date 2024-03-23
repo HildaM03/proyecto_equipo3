@@ -1,4 +1,5 @@
-import 'package:flutter_proyecto_equipo3/pages/About%20us.dart';
+
+import 'package:flutter_proyecto_equipo3/pages/About_us.dart';
 import 'package:flutter_proyecto_equipo3/pages/home_page.dart';
 import 'package:go_router/go_router.dart';
 
