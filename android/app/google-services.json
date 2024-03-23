@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "662302739897",
+    "project_id": "proyectoequipo3-75954",
+    "storage_bucket": "proyectoequipo3-75954.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:662302739897:android:23baec9fb9d83cacf3ba68",
+        "android_client_info": {
+          "package_name": "com.example.flutter_proyecto_equipo3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz-L9QwBBolMGdI0_XNMQgGdwuyJrNFQU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
