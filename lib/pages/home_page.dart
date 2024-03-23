@@ -1,4 +1,4 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_proyecto_equipo3/services/firestore.dart';
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         stream: _firestoreService.getAutosStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List autosList = snapshot.data!.docs;
+            List<DocumentSnapshot> autosList = snapshot.data!.docs.cast<DocumentSnapshot>();
 
             return ListView.builder(
               itemCount: autosList.length,
@@ -100,14 +100,14 @@ class _HomePageState extends State<HomePage> {
                 DocumentSnapshot document = autosList[index];
                 String docID = document.id;
 
-                Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-                String marcaText = data['Marca'];
-                String modeloText = data['Modelo'];
-                int anoText = data['Año'];
-                String colorText = data['Color'];
-                double precioText = data['Precio'];
-                String urlImagenText = data['URL']; // Obtener la URL de la imagen
+                Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+
+                String marcaText = data?['Marca'] ?? 'Desconocido';
+                String modeloText = data?['Modelo'] ?? 'Desconocido';
+                int anoText = data?['Año'] ?? 0;
+                String colorText = data?['Color'] ?? 'Desconocido';
+                double precioText = data?['Precio'] ?? 0.0;
+                String urlImagenText = data?['URL'] ?? 'Desconocida'; // Obtener la URL de la imagen
 
                 return ListTile(
                   title: Text('$marcaText - $modeloText'),
@@ -116,7 +116,13 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Text(
                           'Año: $anoText - Color: $colorText - Precio: $precioText'),
-                      Text('URL de la imagen: $urlImagenText'), // Mostrar la URL de la imagen
+                     // Mostrar la URL de la imagen
+                      if (urlImagenText.isNotEmpty)
+                        SizedBox(
+                          height: 200,
+                          width: 200,
+                          child: Image.network(urlImagenText), // Display the car image
+                        ),
                     ],
                   ),
                   trailing: Row(
