@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_proyecto_equipo3/services/firestore.dart';
+import 'package:flutter_proyecto_equipo3/widget/drawer.dart';
 
 class HomePage extends StatefulWidget {
+  
   const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
+  
 }
 
 class _HomePageState extends State<HomePage> {
@@ -88,6 +91,7 @@ class _HomePageState extends State<HomePage> {
         onPressed: () => _openAutoBox(),
         child: const Icon(Icons.add),
       ),
+      drawer: const MenuDrawer(), 
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestoreService.getAutosStream(),
         builder: (context, snapshot) {
