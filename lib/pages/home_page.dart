@@ -5,12 +5,10 @@ import 'package:flutter_proyecto_equipo3/services/firestore.dart';
 import 'package:flutter_proyecto_equipo3/widget/drawer.dart';
 
 class HomePage extends StatefulWidget {
-  
   const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
-  
 }
 
 class _HomePageState extends State<HomePage> {
@@ -22,40 +20,51 @@ class _HomePageState extends State<HomePage> {
     int? ano;
     String? color;
     double? precio;
-    String? urlImagen; // Nuevo campo para la URL de la imagen
+    String? urlImagen;
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              onChanged: (value) => marca = value,
-              decoration: InputDecoration(labelText: 'Marca'),
-            ),
-            TextField(
-              onChanged: (value) => modelo = value,
-              decoration: InputDecoration(labelText: 'Modelo'),
-            ),
-            TextField(
-              onChanged: (value) => ano = int.tryParse(value),
-              decoration: InputDecoration(labelText: 'Año'),
-            ),
-            TextField(
-              onChanged: (value) => color = value,
-              decoration: InputDecoration(labelText: 'Color'),
-            ),
-            TextField(
-              onChanged: (value) => precio = double.tryParse(value),
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Precio'),
-            ),
-            TextField( // Nuevo campo para la URL de la imagen
-              onChanged: (value) => urlImagen = value,
-              decoration: InputDecoration(labelText: 'URL de la imagen'),
-            ),
-          ],
+        contentPadding: const EdgeInsets.all(16),
+        title: Text(docID == null ? 'Agregar Auto' : 'Editar Auto', style: TextStyle(color: Colors.blueGrey)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 8),
+              TextField(
+                onChanged: (value) => marca = value,
+                decoration: InputDecoration(labelText: 'Marca', labelStyle: TextStyle(color: Colors.blueGrey)),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                onChanged: (value) => modelo = value,
+                decoration: InputDecoration(labelText: 'Modelo', labelStyle: TextStyle(color: Colors.blueGrey)),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                onChanged: (value) => ano = int.tryParse(value),
+                decoration: InputDecoration(labelText: 'Año', labelStyle: TextStyle(color: Colors.blueGrey)),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                onChanged: (value) => color = value,
+                decoration: InputDecoration(labelText: 'Color', labelStyle: TextStyle(color: Colors.blueGrey)),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                onChanged: (value) => precio = double.tryParse(value),
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Precio', labelStyle: TextStyle(color: Colors.blueGrey)),
+              ),
+              SizedBox(height: 8),
+              TextField(
+                onChanged: (value) => urlImagen = value,
+                decoration: InputDecoration(labelText: 'URL de la imagen', labelStyle: TextStyle(color: Colors.blueGrey)),
+              ),
+            ],
+          ),
         ),
         actions: [
           ElevatedButton(
@@ -65,7 +74,7 @@ class _HomePageState extends State<HomePage> {
                   ano != null &&
                   color != null &&
                   precio != null &&
-                  urlImagen != null) { // Asegúrate de que la URL de la imagen no sea nula
+                  urlImagen != null) {
                 if (docID == null) {
                   _firestoreService.addAuto(
                       marca!, modelo!, ano!, color!, precio!, urlImagen!);
@@ -76,8 +85,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
               }
             },
-            child: Text(docID == null ? "Add" : "Update"),
-          )
+            child: Text(docID == null ? "Agregar" : "Actualizar"),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
+          ),
         ],
       ),
     );
@@ -86,17 +96,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Autos")),
+      appBar: AppBar(title: const Text("Autos", style: TextStyle(color: Colors.blueGrey))),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openAutoBox(),
         child: const Icon(Icons.add),
+        backgroundColor: Colors.blueGrey,
       ),
-      drawer: const MenuDrawer(), 
+      drawer: const MenuDrawer(),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestoreService.getAutosStream(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<DocumentSnapshot> autosList = snapshot.data!.docs.cast<DocumentSnapshot>();
+            List<DocumentSnapshot> autosList =
+                snapshot.data!.docs.cast<DocumentSnapshot>();
 
             return ListView.builder(
               itemCount: autosList.length,
@@ -104,44 +116,53 @@ class _HomePageState extends State<HomePage> {
                 DocumentSnapshot document = autosList[index];
                 String docID = document.id;
 
-                Map<String, dynamic>? data = document.data() as Map<String, dynamic>?;
+                Map<String, dynamic>? data =
+                    document.data() as Map<String, dynamic>?;
 
                 String marcaText = data?['Marca'] ?? 'Desconocido';
                 String modeloText = data?['Modelo'] ?? 'Desconocido';
                 int anoText = data?['Año'] ?? 0;
                 String colorText = data?['Color'] ?? 'Desconocido';
                 double precioText = data?['Precio'] ?? 0.0;
-                String urlImagenText = data?['URL'] ?? 'Desconocida'; // Obtener la URL de la imagen
+                String urlImagenText = data?['URL'] ?? 'Desconocida';
 
-                return ListTile(
-                  title: Text('$marcaText - $modeloText'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          'Año: $anoText - Color: $colorText - Precio: $precioText'),
-                     // Mostrar la URL de la imagen
-                      if (urlImagenText.isNotEmpty)
-                        SizedBox(
-                          height: 200,
-                          width: 200,
-                          child: Image.network(urlImagenText), // Display the car image
+                return Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  color: Colors.grey.shade300,
+                  child: ListTile(
+                    title: Text('$marcaText - $modeloText', style: TextStyle(color: Colors.black)),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Año: $anoText - Color: $colorText - Precio: $precioText',
+                          style: TextStyle(color: Colors.black),
                         ),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: () => _openAutoBox(docID: docID),
-                        icon: const Icon(Icons.edit),
-                      ),
-                      IconButton(
-                        onPressed: () =>
-                            _firestoreService.deleteAuto(docID),
-                        icon: const Icon(Icons.delete),
-                      )
-                    ],
+                        if (urlImagenText.isNotEmpty)
+                          SizedBox(
+                            height: 200, // Establece una altura estándar para la imagen
+                            width: double.infinity,
+                            child: Image.network(urlImagenText, fit: BoxFit.cover),
+                          ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () => _openAutoBox(docID: docID),
+                          icon: const Icon(Icons.edit),
+                          color: Colors.blueGrey,
+                        ),
+                        IconButton(
+                          onPressed: () =>
+                              _firestoreService.deleteAuto(docID),
+                          icon: const Icon(Icons.delete),
+                          color: Colors.blueGrey,
+                        )
+                      ],
+                    ),
                   ),
                 );
               },

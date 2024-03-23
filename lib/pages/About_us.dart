@@ -8,7 +8,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Acerca del Examen'),
+        title: const Text('Acerca del Proyecto'),
       ),
       drawer: const MenuDrawer(),
       body: Container(
@@ -16,7 +16,7 @@ class AboutScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.black, Colors.grey.shade800],
+            colors: [Colors.blue.shade900, Colors.grey.shade600],
           ),
         ),
         child: SingleChildScrollView(
@@ -37,7 +37,7 @@ class AboutScreen extends StatelessWidget {
                 'Este proyecto es el resultado de un examen práctico de programación móvil que se enfoca en la creación de una aplicación utilizando Flutter y Firebase para realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre una base de datos Firestore. A continuación, se describen los puntos clave del proyecto:',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey,
+                  color: Colors.white,
                 ),
               ),
               const SizedBox(height: 20), 
@@ -57,6 +57,19 @@ class AboutScreen extends StatelessWidget {
                 'Implementación del CRUD:',
                 'Se implementó la funcionalidad para crear, leer, actualizar y eliminar registros de la colección "Vehículos" en Firebase Firestore. Se utilizó Providers para gestionar el estado de la aplicación y la comunicación con Firebase.',
               ),
+              const SizedBox(height: 20),
+              const Text(
+                'Integrantes del Equipo:',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+              _buildTeamMember('Hilda Ester Melendez', '62151194'),
+              _buildTeamMember('Daniel Edgardo Morales', '62241019'),
+              _buildTeamMember('Carlos Leonel Sandoval', '62111743'),
             ],
           ),
         ),
@@ -81,10 +94,28 @@ class AboutScreen extends StatelessWidget {
           description,
           style: const TextStyle(
             fontSize: 16,
-            color: Colors.grey,
+            color: Colors.white,
           ),
         ),
         const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildTeamMember(String name, String id) {
+    return Row(
+      children: [
+        const Icon(Icons.person, color: Colors.white),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            '$name - $id',
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ],
     );
   }
