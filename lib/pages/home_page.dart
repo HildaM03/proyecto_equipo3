@@ -14,6 +14,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final FirestoreService _firestoreService = FirestoreService();
 
+  double convertirADouble(dynamic valor) {
+    if (valor is int) return valor.toDouble();
+    if (valor is double) return valor;
+    return 0.0;
+  }
+
   void _openAutoBox({String? docID}) {
     String? marca;
     String? modelo;
@@ -26,7 +32,8 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) => AlertDialog(
         contentPadding: const EdgeInsets.all(16),
-        title: Text(docID == null ? 'Agregar Auto' : 'Editar Auto', style: TextStyle(color: Colors.blueGrey)),
+        title: Text(docID == null ? 'Agregar Auto' : 'Editar Auto',
+            style: TextStyle(color: Colors.blueGrey)),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -35,33 +42,45 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 8),
               TextField(
                 onChanged: (value) => marca = value,
-                decoration: InputDecoration(labelText: 'Marca', labelStyle: TextStyle(color: Colors.blueGrey)),
+                decoration: InputDecoration(
+                    labelText: 'Marca',
+                    labelStyle: TextStyle(color: Colors.blueGrey)),
               ),
               SizedBox(height: 8),
               TextField(
                 onChanged: (value) => modelo = value,
-                decoration: InputDecoration(labelText: 'Modelo', labelStyle: TextStyle(color: Colors.blueGrey)),
+                decoration: InputDecoration(
+                    labelText: 'Modelo',
+                    labelStyle: TextStyle(color: Colors.blueGrey)),
               ),
               SizedBox(height: 8),
               TextField(
                 onChanged: (value) => ano = int.tryParse(value),
-                decoration: InputDecoration(labelText: 'Año', labelStyle: TextStyle(color: Colors.blueGrey)),
+                decoration: InputDecoration(
+                    labelText: 'Año',
+                    labelStyle: TextStyle(color: Colors.blueGrey)),
               ),
               SizedBox(height: 8),
               TextField(
                 onChanged: (value) => color = value,
-                decoration: InputDecoration(labelText: 'Color', labelStyle: TextStyle(color: Colors.blueGrey)),
+                decoration: InputDecoration(
+                    labelText: 'Color',
+                    labelStyle: TextStyle(color: Colors.blueGrey)),
               ),
               SizedBox(height: 8),
               TextField(
                 onChanged: (value) => precio = double.tryParse(value),
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(labelText: 'Precio', labelStyle: TextStyle(color: Colors.blueGrey)),
+                decoration: InputDecoration(
+                    labelText: 'Precio',
+                    labelStyle: TextStyle(color: Colors.blueGrey)),
               ),
               SizedBox(height: 8),
               TextField(
                 onChanged: (value) => urlImagen = value,
-                decoration: InputDecoration(labelText: 'URL de la imagen', labelStyle: TextStyle(color: Colors.blueGrey)),
+                decoration: InputDecoration(
+                    labelText: 'URL de la imagen',
+                    labelStyle: TextStyle(color: Colors.blueGrey)),
               ),
             ],
           ),
@@ -86,7 +105,8 @@ class _HomePageState extends State<HomePage> {
               }
             },
             child: Text(docID == null ? "Agregar" : "Actualizar"),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
+            style:
+                ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey),
           ),
         ],
       ),
@@ -96,7 +116,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Autos", style: TextStyle(color: Colors.blueGrey))),
+      appBar: AppBar(
+          title:
+              const Text("Autos", style: TextStyle(color: Colors.blueGrey))),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openAutoBox(),
         child: const Icon(Icons.add),
@@ -123,15 +145,20 @@ class _HomePageState extends State<HomePage> {
                 String modeloText = data?['Modelo'] ?? 'Desconocido';
                 int anoText = data?['Año'] ?? 0;
                 String colorText = data?['Color'] ?? 'Desconocido';
-                double precioText = data?['Precio'] ?? 0.0;
+
+                // Aquí uso la función para evitar error de tipo
+                double precioText = convertirADouble(data?['Precio']);
+
                 String urlImagenText = data?['URL'] ?? 'Desconocida';
 
                 return Card(
                   elevation: 4,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin:
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   color: Colors.grey.shade300,
                   child: ListTile(
-                    title: Text('$marcaText - $modeloText', style: TextStyle(color: Colors.black)),
+                    title: Text('$marcaText - $modeloText',
+                        style: TextStyle(color: Colors.black)),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -141,9 +168,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                         if (urlImagenText.isNotEmpty)
                           SizedBox(
-                            height: 200, // Establece una altura estándar para la imagen
+                            height: 200,
                             width: double.infinity,
-                            child: Image.network(urlImagenText, fit: BoxFit.cover),
+                            child: Image.network(urlImagenText,
+                                fit: BoxFit.cover),
                           ),
                       ],
                     ),
@@ -156,8 +184,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.blueGrey,
                         ),
                         IconButton(
-                          onPressed: () =>
-                              _firestoreService.deleteAuto(docID),
+                          onPressed: () => _firestoreService.deleteAuto(docID),
                           icon: const Icon(Icons.delete),
                           color: Colors.blueGrey,
                         )
